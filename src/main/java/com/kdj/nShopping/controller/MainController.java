@@ -42,8 +42,8 @@ public class MainController {
         String[] arr;
 
         try {
-//            String apiURL = "https://openapi.naver.com/v1/datalab/shopping/categories";
-            String apiURL = "https://openapi.naver.com/v1/datalab/shopping/category/keywords";
+            String apiURL = "https://openapi.naver.com/v1/datalab/shopping/categories";
+//            String apiURL = "https://openapi.naver.com/v1/datalab/shopping/category/keywords";
             
             Request request = Request.builder()
             				  .startDate("2017-08-01")
@@ -94,7 +94,7 @@ public class MainController {
             con.setDoOutput(true);
             DataOutputStream wr = new DataOutputStream(con.getOutputStream());
             
-            wr.writeBytes(new GsonBuilder().create().toJson(requsetKeyword));
+            wr.writeBytes(new GsonBuilder().create().toJson(request));
             
             
             wr.flush();
