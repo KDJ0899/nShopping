@@ -2,18 +2,16 @@ package com.kdj.nShopping.controller;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
-import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.google.gson.GsonBuilder;
@@ -32,6 +30,12 @@ public class MainController {
 	public String Hello() {
 		
 		return "welcome";
+	}
+	
+	@RequestMapping(value ="/map" ,method=RequestMethod.GET)
+	public String Map() {
+		
+		return "map";
 	}
 	
 	@RequestMapping("/shop")
@@ -125,6 +129,41 @@ public class MainController {
         answer="";
         for(String str : arr)
         	answer+=str+"<br>";
+        return new ModelAndView("welcome","answer",answer);
+	}
+	
+	@RequestMapping("/test")
+	public ModelAndView APItest() throws IOException {
+	
+        String answer="";
+        String[] arr;
+        String apiURL = "http://www.cdc.go.kr/npt/biz/npp/rest/getLwcrContent.do?key=3fHo%2FlqxnGak9gvutlBC3Y1%2F3i2AWqal&icdgrpCd=04&icdCd=ND0707&isTxt=1&updtDt=2010-01-06";
+            
+        String USER_AGENT = "Mozilla/5.0";
+
+        URL url;
+		try {
+			url = new URL(apiURL);
+			HttpURLConnection con = (HttpURLConnection) url.openConnection(); 
+	        con.setRequestMethod("GET"); // optional default is GET 
+//	        con.setRequestProperty("Content-Type", "application/json"); 
+	        int responseCode = con.getResponseCode(); 
+	        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream())); 
+	        String inputLine; 
+	        StringBuffer response = new StringBuffer();
+	        while ((inputLine = in.readLine()) != null) { 
+	        	response.append(inputLine); 
+	        	} 
+	        in.close(); // print result 
+	        System.out.println("HTTP 응답 코드 : " + responseCode); 
+	        System.out.println("HTTP body : " + response.toString());
+	        answer = response.toString();
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+       
+   
         return new ModelAndView("welcome","answer",answer);
 	}
 }
