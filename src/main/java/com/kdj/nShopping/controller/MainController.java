@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.kdj.nShopping.dto.Category;
 import com.kdj.nShopping.dto.Keyword;
@@ -44,22 +45,25 @@ public class MainController {
         String clientSecret = "DQEd3Bynck";//애플리케이션 클라이언트 시크릿 값";
         String answer="";
         String[] arr;
+        Gson gson = new Gson();
 
         try {
-            String apiURL = "https://openapi.naver.com/v1/datalab/shopping/categories";
-//            String apiURL = "https://openapi.naver.com/v1/datalab/shopping/category/keywords";
+//            String apiURL = "https://openapi.naver.com/v1/datalab/shopping/categories";
+            String apiURL = "https://openapi.naver.com/v1/datalab/shopping/category/keywords";
             
+            String[] charSet = {"utf-8", "euc-kr", "ksc5601", "iso-8859-1", "x-windows-949"};
+
             Request request = Request.builder()
             				  .startDate("2017-08-01")
-            				  .endDate("2017-09-30")
+            				  .endDate("2017-10-30")
             				  .timeUnit("month")
             				  .category(new Category[] {
             						  Category.builder()
-            						  .name(encoder.encode("패션의류"))
+            						  .name("패션의류")
             						  .param(new String[] {"50000000"})
             						  .build() ,
             						  Category.builder()
-            						  .name(encoder.encode("화장품/미용"))
+            						  .name("화장품/미용")
             						  .param(new String[] {"50000002"})
             						  .build()})
             				  .device("")
@@ -67,15 +71,15 @@ public class MainController {
             				  .ages(new String[] {})
             				  .build();
             
-            RequestKeyword requsetKeyword = RequestKeyword.builder()
+            RequestKeyword requestKeyword = RequestKeyword.builder()
             		.startDate("2017-08-01")
-            		.endDate("2017-09-30")
+            		.endDate("2017-10-01")
             		.timeUnit("month")
             		.category("50000000")
             		.keyword(new Keyword[] {
             				Keyword.builder()
             				.name(encoder.encode("패션의류/정장"))
-            				.param(new String[] {encoder.encode("비즈니스 캐주얼")})
+            				.param(new String[] {encoder.encode("pants")})
             				.build(),
             				Keyword.builder()
             				.name(encoder.encode("패션의류/비지니스 캐주얼"))
@@ -86,8 +90,9 @@ public class MainController {
             		.gender("")
             		.ages(new String[] {"20","30"})
             		.build();
+            String str = "뭐지";
             
-            
+           
             URL url = new URL(apiURL);
             HttpURLConnection con = (HttpURLConnection)url.openConnection();
             con.setRequestMethod("POST");
@@ -98,7 +103,8 @@ public class MainController {
             con.setDoOutput(true);
             DataOutputStream wr = new DataOutputStream(con.getOutputStream());
             
-            wr.writeBytes(new GsonBuilder().create().toJson(request));
+            wr.writeBytes(gson.toJson(requestKeyword));
+            System.out.println(gson.toJson(requestKeyword));
             
             
             wr.flush();
@@ -119,7 +125,7 @@ public class MainController {
             }
             br.close();
             System.out.println(URLDecoder.decode(response.toString(),"UTF-8"));
-            answer = URLDecoder.decode(response.toString(),"UTF-8");
+            answer =response.toString();
 
         } catch (Exception e) {
             System.out.println(e);
